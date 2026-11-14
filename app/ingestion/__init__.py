@@ -7,6 +7,7 @@ from app.ingestion.document_loader import (
     TextDocumentForRAG,
 )
 from app.ingestion.excel_parser import ExcelParser, ExcelSheetData, ParsedExcelWorkbook
+from app.ingestion.pdf_parser import PDFParser, ParsedPDFDocument
 from app.ingestion.word_parser import DocumentSection, ParsedWordDocument, WordParser
 
 __all__ = [
@@ -16,9 +17,10 @@ __all__ = [
     "ExcelRegistry",
     "ExcelSheetData",
     "IngestionResult",
+    "PDFParser",
     "ParsedExcelWorkbook",
+    "ParsedPDFDocument",
     "ParsedWordDocument",
     "TextDocumentForRAG",
     "WordParser",
 ]
-

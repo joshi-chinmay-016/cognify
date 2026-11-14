@@ -94,7 +94,7 @@ def test_drive_client_sync_logic(mock_build, tmp_path: Path):
     ])
 
     # Mock download_file
-    client.download_file = MagicMock(side_effect=lambda fid, path: path.write_text("downloaded"))
+    client.download_file = MagicMock(side_effect=lambda fid, path, **kwargs: path.write_text("downloaded"))
 
     known_manifest = {
         "f1": "2026-01-01T00:00:00Z",  # unchanged

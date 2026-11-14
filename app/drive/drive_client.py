@@ -24,11 +24,14 @@ from app.drive.authentication import (
 
 logger = logging.getLogger(__name__)
 
-SUPPORTED_EXTENSIONS = {".docx", ".xlsx", ".xls"}
+SUPPORTED_EXTENSIONS = {".docx", ".xlsx", ".xls", ".pdf"}
 SUPPORTED_MIME_TYPES = {
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "docx",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "xlsx",
     "application/vnd.ms-excel": "xls",
+    "application/pdf": "pdf",
+    "application/vnd.google-apps.document": "docx",
+    "application/vnd.google-apps.spreadsheet": "xlsx",
 }
 
 
@@ -167,13 +170,26 @@ class GoogleDriveClient:
             logger.error("Failed to list files from Google Drive: %s", e)
             return []
 
-    def download_file(self, file_id: str, destination_path: Path) -> Path:
+    def download_file(self, file_id: str, destination_path: Path, mime_type: str = "") -> Path:
         """Download binary file from Google Drive to local disk."""
         if not self.service:
             raise RuntimeError("Google Drive client is not authenticated.")
 
         destination_path.parent.mkdir(parents=True, exist_ok=True)
-        request = self.service.files().get_media(fileId=file_id)
+
+        # Check if Google Docs or Google Sheets export is required
+        if mime_type == "application/vnd.google-apps.document":
+            request = self.service.files().export_media(
+                fileId=file_id,
+                mimeType="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            )
+        elif mime_type == "application/vnd.google-apps.spreadsheet":
+            request = self.service.files().export_media(
+                fileId=file_id,
+                mimeType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        else:
+            request = self.service.files().get_media(fileId=file_id)
 
         with open(destination_path, "wb") as f:
             downloader = MediaIoBaseDownload(f, request, chunksize=1024 * 1024)
@@ -217,7 +233,10 @@ class GoogleDriveClient:
         remote_ids = {item.file_id for item in remote_items}
 
         for item in remote_items:
-            dest_file = target_dir / item.name
+            dest_name = item.name
+            if not Path(dest_name).suffix and item.file_type:
+                dest_name = f"{dest_name}.{item.file_type}"
+            dest_file = target_dir / dest_name
             last_known_mod = manifest.get(item.file_id)
 
             # Check if file needs download: new, modified timestamp, or missing on disk
@@ -229,7 +248,7 @@ class GoogleDriveClient:
 
             if needs_download:
                 try:
-                    self.download_file(item.file_id, dest_file)
+                    self.download_file(item.file_id, dest_file, mime_type=item.mime_type)
                     if last_known_mod is not None:
                         report.modified.append(dest_file)
                     else:

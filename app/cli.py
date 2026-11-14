@@ -55,6 +55,7 @@ class CognifyCLI:
         # State tracking
         self.word_count = 0
         self.excel_count = 0
+        self.pdf_count = 0
         self.ollama_online = False
         self.ollama_status_msg = ""
         self.drive_connected = False
@@ -102,6 +103,7 @@ class CognifyCLI:
             ingestion = self.loader.load_directory(self.config.downloads_dir)
             self.word_count = len(ingestion.word_documents)
             self.excel_count = len(ingestion.excel_workbooks)
+            self.pdf_count = len(ingestion.pdf_documents)
 
             # 4. Load or build FAISS index
             index_loaded = self.rag.load_or_initialize_index()
@@ -130,6 +132,7 @@ class CognifyCLI:
         # Document counts
         table.add_row("Word Documents", f"[green]{self.word_count}[/green] files loaded")
         table.add_row("Excel Workbooks", f"[green]{self.excel_count}[/green] workbooks loaded")
+        table.add_row("PDF Documents", f"[green]{self.pdf_count}[/green] files loaded")
         table.add_row("Indexed Vector Chunks", f"[green]{len(self.rag.vector_store)}[/green] chunks in FAISS")
 
         self.console.print(table)
@@ -176,6 +179,10 @@ class CognifyCLI:
         # Word docs
         for f in self.config.downloads_dir.glob("*.docx"):
             table.add_row(f.name, "Word Document", f"Local file ({f.stat().st_size} bytes)")
+
+        # PDF docs
+        for f in self.config.downloads_dir.glob("*.pdf"):
+            table.add_row(f.name, "PDF Document", f"Local file ({f.stat().st_size} bytes)")
 
         self.console.print(table)
 

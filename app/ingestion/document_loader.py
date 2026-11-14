@@ -15,6 +15,7 @@ from typing import Any
 import pandas as pd
 
 from app.ingestion.excel_parser import ExcelParser, ExcelSheetData, ParsedExcelWorkbook
+from app.ingestion.pdf_parser import PDFParser, ParsedPDFDocument
 from app.ingestion.word_parser import ParsedWordDocument, WordParser
 from app.utils.metadata import MetadataRegistry
 
@@ -116,6 +117,7 @@ class IngestionResult:
 
     word_documents: list[ParsedWordDocument] = field(default_factory=list)
     excel_workbooks: list[ParsedExcelWorkbook] = field(default_factory=list)
+    pdf_documents: list[ParsedPDFDocument] = field(default_factory=list)
     rag_documents: list[TextDocumentForRAG] = field(default_factory=list)
     errors: list[str] = field(default_factory=list)
 
@@ -128,14 +130,14 @@ class DocumentLoader:
         self.metadata_registry = metadata_registry
 
     def load_directory(self, directory: Path) -> IngestionResult:
-        """Scan directory and load all supported .docx, .xlsx, .xls files."""
+        """Scan directory and load all supported .docx, .xlsx, .xls, .pdf files."""
         result = IngestionResult()
         if not directory.exists():
             result.errors.append(f"Directory not found: {directory}")
             return result
 
         supported_files: list[Path] = []
-        for ext in ["*.docx", "*.xlsx", "*.xls"]:
+        for ext in ["*.docx", "*.xlsx", "*.xls", "*.pdf"]:
             supported_files.extend(directory.glob(ext))
 
         logger.info("Found %d supported files in %s", len(supported_files), directory)
@@ -162,6 +164,26 @@ class DocumentLoader:
                         )
                     else:
                         logger.warning("Empty or unparsable Word document: %s", file_path.name)
+
+                elif suffix == ".pdf":
+                    parsed_pdf = PDFParser.parse(file_path, filename=file_path.name)
+                    if not parsed_pdf.is_empty:
+                        result.pdf_documents.append(parsed_pdf)
+                        result.rag_documents.append(
+                            TextDocumentForRAG(
+                                content=parsed_pdf.full_text,
+                                metadata={
+                                    "source": parsed_pdf.filename,
+                                    "filename": parsed_pdf.filename,
+                                    "file_id": parsed_pdf.file_id,
+                                    "file_type": "pdf",
+                                    "title": parsed_pdf.title,
+                                    "author": parsed_pdf.author,
+                                },
+                            )
+                        )
+                    else:
+                        logger.warning("Empty or unparsable PDF document: %s", file_path.name)
 
                 elif suffix in [".xlsx", ".xls"]:
                     parsed_wb = ExcelParser.parse(file_path, filename=file_path.name)
