@@ -55,4 +55,12 @@ Thumbs.db
 .antigravity/
 .kilo/
 .kilocode/
+
+
 powershell.bat
+
+
+
+.env
+credentials.json
+token.json
