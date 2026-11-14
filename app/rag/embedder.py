@@ -73,3 +73,4 @@ class LocalEmbedder:
             normalize_embeddings=True,
         )
         return emb[0].astype(np.float32)
+

@@ -269,3 +269,4 @@ Heavy frameworks introduce excessive abstraction layers, brittle dependency tree
 ### Q5: How do you handle schema mismatches in cross-file calculations?
 **Answer**:
 `CrossFileAnalyzer` inspects column names in both DataFrames before running computations. It uses fuzzy matching and domain synonym dictionaries (e.g., mapping `sales`, `turnover`, and `revenue`). If a required metric column cannot be found in either workbook, the system immediately halts the calculation and returns a clean error listing the available columns, preventing silent errors or misleading computations.
+

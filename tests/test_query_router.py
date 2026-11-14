@@ -43,3 +43,4 @@ def test_query_router_required_examples():
     # 8. Clarification on empty / ambiguous query
     d8 = router.route("xyz123")
     assert d8.intent == QueryIntent.CLARIFICATION
+

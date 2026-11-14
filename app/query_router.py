@@ -265,3 +265,4 @@ class QueryRouter:
             return registered[0], registered[1]
 
         return "sales_2025.xlsx", "sales_2026.xlsx"
+

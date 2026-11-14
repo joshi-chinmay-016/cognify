@@ -65,3 +65,5 @@ powershell.bat
 .env
 credentials.json
 token.json
+
+INTERVIEW_GUIDE.md

@@ -49,3 +49,4 @@ def test_chart_generation_invalid_columns(tmp_path: Path):
     df = pd.DataFrame({"A": [1, 2]})
     with pytest.raises(ChartGenerationError):
         generator.create_bar_chart(df, category_col="NonExistent", value_col="A")
+

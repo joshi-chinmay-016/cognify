@@ -199,3 +199,4 @@ class ChartGenerator:
 
         logger.info("Saved pie chart to %s", out_path)
         return out_path
+

@@ -174,3 +174,4 @@ class WordParser:
             metadata=metadata,
             is_empty=is_empty,
         )
+

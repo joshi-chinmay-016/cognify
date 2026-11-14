@@ -100,3 +100,4 @@ class MetadataRegistry:
     def clear(self) -> None:
         self.records.clear()
         self.save()
+

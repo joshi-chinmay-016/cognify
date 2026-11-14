@@ -108,3 +108,4 @@ def test_drive_client_sync_logic(mock_build, tmp_path: Path):
     assert len(report.downloaded) == 1
     assert report.downloaded[0].name == "new_doc.docx"
     assert "f_old" in report.deleted
+

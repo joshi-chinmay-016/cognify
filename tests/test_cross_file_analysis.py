@@ -82,3 +82,4 @@ def test_cross_file_missing_file_error(tmp_path: Path):
     )
     assert result.error is not None
     assert "not found" in result.error.lower()
+

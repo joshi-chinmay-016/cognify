@@ -76,3 +76,4 @@ class AppConfig:
 
 # Global singleton instance
 config = AppConfig()
+

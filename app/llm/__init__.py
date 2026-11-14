@@ -7,3 +7,4 @@ from app.llm.generator import (
 )
 
 __all__ = ["ModelNotFoundError", "OllamaLLM", "OllamaServiceError"]
+

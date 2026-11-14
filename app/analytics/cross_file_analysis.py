@@ -228,3 +228,4 @@ class CrossFileAnalyzer:
             category_breakdown=breakdown_table,
             summary_text=summary_text,
         )
+

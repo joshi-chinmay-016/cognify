@@ -163,3 +163,4 @@ class OllamaLLM:
         )
 
         return self.generate(prompt=user_prompt, system_prompt=system_prompt)
+

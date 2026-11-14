@@ -105,3 +105,4 @@ class DocumentChunker:
 
         logger.info("Total chunks generated across %d documents: %d", len(documents), len(all_chunks))
         return all_chunks
+

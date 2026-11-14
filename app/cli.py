@@ -422,3 +422,4 @@ class CognifyCLI:
             except Exception as e:
                 logger.exception("Unexpected error in main loop: %s", e)
                 self.console.print(f"[bold red]An unexpected error occurred:[/bold red] {e}")
+

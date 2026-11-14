@@ -303,3 +303,4 @@ class PandasAnalyticsEngine:
             summary_text=summary,
             table=res.table,
         )
+

@@ -78,3 +78,4 @@ def test_find_highest_entity(tmp_path: Path):
     assert res.error is None
     assert res.result_value["entity"] == "East"
     assert res.result_value["value"] == 5000.0
+

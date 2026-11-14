@@ -73,3 +73,4 @@ def test_excel_registry_and_document_loader(tmp_path: Path):
     # Query first sheet if name omitted
     first_sheet = registry.get_sheet("sales_2025.xlsx")
     assert first_sheet is not None
+

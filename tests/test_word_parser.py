@@ -74,3 +74,4 @@ def test_word_parser_handles_nonexistent_and_empty_files(tmp_path: Path):
     parsed_corrupt = WordParser.parse(corrupt_file)
     assert parsed_corrupt.is_empty
     assert "package" in parsed_corrupt.metadata["error"].lower() or "error" in parsed_corrupt.metadata
+

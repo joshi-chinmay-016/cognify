@@ -40,3 +40,4 @@ def test_chunker_split_documents():
     sources = {c.source for c in all_chunks}
     assert "doc1.docx" in sources
     assert "doc2.docx" in sources
+

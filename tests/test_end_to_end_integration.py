@@ -137,3 +137,4 @@ def test_e2e_chart_generation(setup_cognify_env):
     assert chart_path.exists()
     assert chart_path.suffix == ".png"
     assert chart_path.stat().st_size > 1000
+

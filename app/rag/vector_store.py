@@ -165,3 +165,4 @@ class FAISSVectorStore:
         self.index = faiss.IndexFlatIP(self.dimension)
         self.chunks.clear()
         self._chunk_ids.clear()
+

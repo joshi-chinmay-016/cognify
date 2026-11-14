@@ -108,3 +108,4 @@ class SemanticRetriever:
             scores=scores,
             formatted_context=formatted_context,
         )
+

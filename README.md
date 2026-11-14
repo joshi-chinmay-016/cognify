@@ -349,3 +349,4 @@ python -m pytest tests/test_end_to_end_integration.py
 - **Complex Multi-Table Spreadsheets**: Spreadsheets with non-standard merged headers or multiple nested tables on a single worksheet require pre-cleaning.
 - **Very Large Documents**: Documents exceeding thousands of pages will require partitioned vector indexing or hierarchical summaries for fast semantic retrieval.
 - **Hardware Requirements**: Local inference with `qwen2.5:3b` requires at least 4GB of RAM (or VRAM for GPU acceleration).
+

@@ -155,3 +155,4 @@ class RAGPipeline:
                 has_context=True,
                 error=str(e),
             )
+

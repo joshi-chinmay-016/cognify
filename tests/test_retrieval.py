@@ -93,3 +93,4 @@ def test_semantic_retriever_source_attribution():
     assert "handbook.docx" in result.sources
     assert len(result.chunks) >= 1
     assert "Vacation policy text" in result.formatted_context
+
