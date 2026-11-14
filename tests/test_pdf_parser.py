@@ -50,3 +50,4 @@ def test_pdf_parser_corrupted_file(tmp_path: Path):
     parsed = PDFParser.parse(bad_pdf)
     assert parsed.is_empty
     assert "error" in parsed.metadata
+

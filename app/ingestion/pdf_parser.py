@@ -112,3 +112,4 @@ class PDFParser:
             metadata=metadata,
             is_empty=is_empty,
         )
+
