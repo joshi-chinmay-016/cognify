@@ -1,0 +1,58 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Testing & Linting
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+
+# Environment and sensitive data
+.env
+credentials.json
+token.json
+
+# Cognify data and cache
+data/downloads/*
+!data/downloads/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+vector_store/*
+!vector_store/.gitkeep
+charts/*.png
+!charts/.gitkeep
+
+# IDE and OS
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+.antigravity/
+.kilo/
+.kilocode/
+powershell.bat
