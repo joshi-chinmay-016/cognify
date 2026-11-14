@@ -84,7 +84,13 @@ class CognifyCLI:
             self.ollama_online, self.ollama_status_msg = self.llm.check_connection()
 
             # 2. Check Google Drive
-            self.drive_connected = self.drive_client.authenticate(interactive=False)
+            # If credentials.json exists but token.json doesn't, allow interactive login
+            can_interactive = (
+                self.config.google_credentials_file.exists()
+                and not self.config.google_token_file.exists()
+                and sys.stdin.isatty()
+            )
+            self.drive_connected = self.drive_client.authenticate(interactive=can_interactive)
             if self.drive_connected and self.config.google_drive_folder_id:
                 try:
                     sync_report = self.drive_client.sync()
@@ -138,6 +144,7 @@ class CognifyCLI:
         help_table.add_row("/status", "Display current system, LLM, Drive, and index status")
         help_table.add_row("/files", "List all ingested Word and Excel documents")
         help_table.add_row("/sources", "List unique source documents registered in RAG index")
+        help_table.add_row("/drive", "Authenticate and synchronize files from Google Drive")
         help_table.add_row("/reindex", "Re-parse documents and rebuild FAISS index from scratch")
         help_table.add_row("/exit or /quit", "Exit the Cognify assistant")
         help_table.add_row("", "")
@@ -194,6 +201,32 @@ class CognifyCLI:
                 self.console.print(f"[bold green]Re-indexing complete![/bold green] Indexed {count} chunks.")
             else:
                 self.console.print("[yellow]No documents found in downloads directory to index.[/yellow]")
+
+    def sync_drive(self) -> None:
+        """Trigger interactive Google Drive authentication and synchronization."""
+        self.console.print("[cyan]Connecting to Google Drive...[/cyan]")
+        self.drive_connected = self.drive_client.authenticate(interactive=True)
+        if not self.drive_connected:
+            self.console.print("[red]Could not authenticate with Google Drive. Check credentials.json.[/red]")
+            return
+
+        if not self.config.google_drive_folder_id:
+            self.console.print(
+                "[yellow]Google Drive authenticated, but GOOGLE_DRIVE_FOLDER_ID is not set in .env.[/yellow]\n"
+                "Please add GOOGLE_DRIVE_FOLDER_ID=<your_folder_id> to your .env file."
+            )
+            return
+
+        with self.console.status("[bold cyan]Syncing files from Google Drive...", spinner="dots"):
+            report = self.drive_client.sync()
+
+        self.console.print(
+            f"[green]Drive Sync Finished![/green] "
+            f"Downloaded: {len(report.downloaded)}, Modified: {len(report.modified)}, "
+            f"Unchanged: {len(report.unchanged)}, Errors: {len(report.errors)}"
+        )
+        if report.downloaded or report.modified:
+            self.reindex()
 
     def process_query(self, query: str) -> None:
         """Process user query through routing, execution, and formatted output."""
@@ -413,6 +446,8 @@ class CognifyCLI:
                     self.list_sources()
                 elif cmd == "/reindex":
                     self.reindex()
+                elif cmd in ["/drive", "/sync"]:
+                    self.sync_drive()
                 else:
                     self.process_query(user_input)
 
