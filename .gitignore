@@ -36,6 +36,7 @@ credentials.json
 token.json
 
 # Cognify data and cache
+cognify.log
 data/downloads/*
 !data/downloads/.gitkeep
 data/processed/*
