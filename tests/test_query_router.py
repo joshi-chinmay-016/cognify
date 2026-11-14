@@ -44,3 +44,32 @@ def test_query_router_required_examples():
     d8 = router.route("xyz123")
     assert d8.intent == QueryIntent.CLARIFICATION
 
+
+def test_query_router_with_registered_workbooks():
+    """Test routing when registry contains loaded workbooks (exercises Path extraction)."""
+    from app.ingestion.excel_parser import ParsedExcelWorkbook
+
+    reg = ExcelRegistry()
+    reg.register_workbook(ParsedExcelWorkbook(filename="sales_2025.xlsx", file_id="f1"))
+    reg.register_workbook(ParsedExcelWorkbook(filename="sales_2026.xlsx", file_id="f2"))
+
+    router = QueryRouter(reg)
+
+    # 1. Total revenue in 2025 (matches registered workbook)
+    d1 = router.route("What is the total revenue in 2025?")
+    assert d1.intent == QueryIntent.EXCEL_ANALYTICS
+
+    # 2. Compare 2025 and 2026
+    d2 = router.route("Compare total revenue in 2025 and 2026.")
+    assert d2.intent == QueryIntent.CROSS_FILE_ANALYTICS
+    assert "sales_2025.xlsx" in d2.parameters["file1"] or "sales_2025.xlsx" in d2.parameters["file2"]
+
+    # 3. Chart with registered workbooks
+    d3 = router.route("Generate a bar chart comparing total revenue by region.")
+    assert d3.intent == QueryIntent.CHART
+
+    # 4. Chart explicitly naming a registered workbook
+    d4 = router.route("Generate a bar chart for sales_2025.xlsx by region.")
+    assert d4.intent == QueryIntent.CHART
+    assert "sales_2025.xlsx" in d4.parameters["workbooks"]
+
